@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat App</title>
+  </head>
+  <body>
+    <h1>Welcome, {{ username }}!</h1>
+    <h2>Chat Room</h2>
+
+    <!-- Logout Button -->
+    <form
+      action="{{ url_for('logout') }}"
+      method="POST"
+      style="display: inline"
+    >
+      <button type="submit">Logout</button>
+    </form>
+
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button onclick="sendMessage()">Send</button>
+
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <script>
+      var socket = io();
+
+      // Listen for incoming messages
+      socket.on("message", function (msg) {
+        var msgDiv = document.createElement("div");
+        msgDiv.textContent = msg;
+        document.getElementById("messages").appendChild(msgDiv);
+      });
+
+      function sendMessage() {
+        var message = document.getElementById("messageInput").value;
+        socket.send(message);
+        document.getElementById("messageInput").value = ""; // Clear input
+      }
+    </script>
+  </body>
+</html>
